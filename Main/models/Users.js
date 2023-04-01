@@ -7,7 +7,7 @@ const userSchema = new Schema(
         type: String,
         required: true,
         unique: true,
-        //* Trimmed  
+        
     },
     email: { 
         type: String,
@@ -17,11 +17,21 @@ const userSchema = new Schema(
     },
     thoughts: [thoughtSchema], //   * Array of `_id` values referencing the `Thought` model
     friends: [friendsSchema] //* Array of `_id` values referencing the `User` model (self-reference)
-    }
+    },
+    {
+        toJSON: {
+          virtuals: true,
+        },
+        id: false,
+      }
 )
 // **Schema Settings**:
 
 // Create a virtual called `friendCount` that retrieves the length of the user's `friends` array field on query.
+userSchema.virtual('friendCount').get(function () {
+    return this.friends.length;
+  });
+
 const Users = model('users', userSchema);
 
 module.exports = Student;
