@@ -2,57 +2,42 @@ const { ObjectId } = require('mongoose').Types;
 const { Users, Thoughts } = require('../models');
 
 // Aggregate function to get the number of Users overall
-const headCount = async () =>
-  Users.aggregate()
-    .count('UserCount')
-    .then((numberOfUsers) => numberOfUsers);
+// const headCount = async () =>
+//   Users.aggregate()
+//     .count('UserCount')
+//     .then((numberOfUsers) => numberOfUsers);
 
-module.exports = {
+const userController = {
   // Get all Users
   getAllUsers(req, res) {
     Users.find()
-      .then(async (Users) => {
-        const UserObj = {
-          Users,
-          headCount: await headCount(),
-        };
-        return res.json(UserObj);
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
-  },
-  // Get a single User
-  getSingleUser(req, res) {
-    Users.findOne({ _id: req.params.UserId })
-      .select('-__v')
-      .then(async (User) =>
-        !User
-          ? res.status(404).json({ message: 'No User with that ID' })
-          : res.json({
-              User,
-              grade: await grade(req.params.UserId),
-            })
-      )
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
-  },
-  // create a new User
-  createNewUser(req, res) {
-    Users.create(req.body)
-      .then((User) => res.json(User))
+      .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
-  // Delete a User and remove them from the course
+  //get a single user
+  getSingleUser(req, res) {
+    Users.findOne({ _id: req.params.userId })
+    .then((user) =>
+    !user
+      ? res.status(404).json({ message: 'No user with that ID' })
+      : res.json(user)
+  )
+  .catch((err) => res.status(500).json(err));
+},
+  // create a new user
+  createNewUser(req, res) {
+    Users.create(req.body)
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json(err));
+  },
+ 
+  // Delete a User and remove all thoughts
   deleteUser(req, res) {
-    Users.findOneAndRemove({ _id: req.params.UserId })
+    Users.findOneDelete({ _id: req.params.UserId })
       .then((User) =>
         !User
           ? res.status(404).json({ message: 'No such User exists' })
-          : Course.findOneAndUpdate(
+          : Thoughts.findOneAndUpdate(
               { Users: req.params.UserId },
               { $pull: { Users: req.params.UserId } },
               { new: true }
@@ -70,10 +55,25 @@ module.exports = {
         res.status(500).json(err);
       });
   },
-
-  // Add an assignment to a User
-  createFriend(req, res) {
-    console.log('You are adding a reaction');
+  updateUser(req, res) {
+    Users.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    )
+      .then((user) => {
+      if (!user) {
+          return res.status(404).json({ message: 'No user with this id!' })
+       }
+        res.json(user);
+    })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+  },
+  // Add a friend to a User
+  addFriend(req, res) {
+    console.log('You are adding a friend');
     console.log(req.body);
     Users.findOneAndUpdate(
       { _id: req.params.UserId },
@@ -90,19 +90,22 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   // Remove assignment from a User
-  deleteFriend(req, res) {
+  removeFriend(req, res) {
     Users.findOneAndUpdate(
       { _id: req.params.UserId },
       { $pull: { friend: { friendId: req.params.friendId } } },
       { runValidators: true, new: true }
     )
-      .then((User) =>
-        !User
-          ? res
-              .status(404)
-              .json({ message: 'No User found with that ID :(' })
-          : res.json(User)
-      )
-      .catch((err) => res.status(500).json(err));
-  },
+      .then((user) => {
+      if (!user) {
+        return res.status(404).json({ message: 'No user with this id!' })
+      }
+      res.json(user);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });  
+},
 };
+module.exports = userController
