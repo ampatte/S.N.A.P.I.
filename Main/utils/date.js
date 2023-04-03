@@ -16,7 +16,8 @@ const addDateSuffix = (date) => {
 
 module.exports = (
     timestamp,
-     { monthLength = 'short', addDateSuffix = true } = {} ) => {
+    { monthLength = 'short', addDateSuffix = true } = {} ) => {
+    const months = {
         0: monthLength === 'short' ? 'Jan' : 'January',
         1: monthLength === 'short' ? 'Feb' : 'Febuary',
         2: monthLength === 'short' ? 'March' : 'March',
@@ -29,5 +30,30 @@ module.exports = (
         9: monthLength === 'short' ? 'Oct' : 'October',
         10: monthLength === 'short' ? 'Nov' : 'November',
         11: monthLength === 'short' ? 'Dec' : 'December',
+    };
 
-     }
+    const dateObj = new Date(timestamp);
+    const formattedMonth = months[dateObj.getMonth()];
+
+    const dayOfMonth = addDateSuffix
+        ? addDateSuffix(dateObj.getDate())
+        : dateObj.getDate();
+
+    const year = dateObj.getFullYear();
+    let hour =
+        dateObj.getHours() > 12
+            ? Math.floor(dateObj.getHours() - 12)
+            : dateObj.getHours();
+        
+        if (hour === 0) {
+            hour = 12;
+        }
+
+        const minutes = (dateObj.getMinutes() < 10 ? '0' : '') + dateObj.getMinutes();
+
+        const periodOfDay = dateObj.getHours() >= 12 ? 'pm' : 'am';
+
+        const formattedTimestamp = `${formattedMonth} ${dayOfMonth}, ${year} at ${hour}:${minutes} ${periodOfDay}`
+        
+        return formattedTimestamp;
+    };
