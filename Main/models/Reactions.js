@@ -1,5 +1,7 @@
 const { Schema, Types } = require ('mongoose');
 
+
+
 const reactionSchema =new Schema(
     {
         reactionId: {
@@ -17,12 +19,14 @@ const reactionSchema =new Schema(
         },
         createdAt: {
             type: Date,
-            default: Date.now
-        }
+            default: Date.now,
+            get: (date) => timeSince(date),
+        },
     },
     {
         toJSON: {
-            getters:true,
+            virtuals: true,
+            getters: true,
         },
         id: false,
     }

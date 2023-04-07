@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const thoughtSchema = require('./Thoughts');
 
 const userSchema = new Schema(
-    {
+  {
     username: {
         type: String,
         required: true,
@@ -14,16 +14,27 @@ const userSchema = new Schema(
         required: true,
         unique: true,
         //* Must match a valid email address (look into Mongoose's matching validation)
+        match:/^\S+@\S+\.\S+$/,
     },
-    thoughts: [thoughtSchema], //   * Array of `_id` values referencing the `Thought` model
-    friends: [friendsSchema] //* Array of `_id` values referencing the `User` model (self-reference)
-    },
+    thoughts: [ //   * Array of `_id` values referencing the `Thought` model
     {
-        toJSON: {
-          virtuals: true,
-        },
-        id: false,
-      }
+        type: Schema.Types.ObjectId,
+        ref: 'Thoughts'
+    }
+    ],
+    friends: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Users'
+        }
+    ]
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
+  }
 )
 // **Schema Settings**:
 
@@ -32,6 +43,6 @@ userSchema.virtual('friendCount').get(function () {
     return this.friends.length;
   });
 
-const Users = model('users', userSchema);
+const Users = model('Users', userSchema);
 
-module.exports = userSchema;
+module.exports = Users;
