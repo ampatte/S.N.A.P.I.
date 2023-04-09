@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose').Types;
 const { Users, Thoughts } = require('../models');
 
 // Aggregate function to get the number of Users overall
@@ -26,6 +25,7 @@ const userController = {
 },
   // create a new user
   createNewUser(req, res) {
+    console.log(req.body)
     Users.create(req.body)
       .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
@@ -34,12 +34,12 @@ const userController = {
   // Delete a User and remove all thoughts
   deleteUser(req, res) {
     Users.findOneDelete({ _id: req.params.UserId })
-      .then((User) =>
-        !User
+      .then((user) =>
+        !user
           ? res.status(404).json({ message: 'No such User exists' })
           : Thoughts.findOneAndUpdate(
               { Users: req.params.UserId },
-              { $pull: { Users: req.params.UserId } },
+              { $pull: { users: req.params.UserId } },
               { new: true }
             )
       )
@@ -80,11 +80,11 @@ const userController = {
       { $addToSet: { friend: req.body } },
       { runValidators: true, new: true }
     )
-      .then((User) =>
-        !User
+      .then((user) =>
+        !user
           ? res
               .status(404)
-              .json({ message: 'No User found with that ID :(' })
+              .json({ message: 'No user found with that ID :(' })
           : res.json(User)
       )
       .catch((err) => res.status(500).json(err));
@@ -108,4 +108,4 @@ const userController = {
     });  
 },
 };
-module.exports = userController
+module.exports = userController;

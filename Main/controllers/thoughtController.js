@@ -22,9 +22,10 @@ const thoughtController = {
   createNewThought(req, res) {
     Thoughts.create(req.body)
       .then((thought) => {
-      return User.findOneAndUpdate(
+        
+      return Users.findOneAndUpdate(
         { _id: req.body.userId },
-        { $addToSet: { thoughts: thought._id } },
+        { $addToSet: { thoughts: req.params.thoughtId } },
         { new: true }
       );
     })
@@ -47,7 +48,7 @@ const thoughtController = {
       if (!thought) {
           return res.status(404).json({ message: 'No thought with that ID' })
       }
-      return User.findOneAndUpdate(
+      return Users.findOneAndUpdate(
         { thoughts: req.params.thoughtId },
         { $pull: { thoughts:req.params.thoughtId } },
         {new: true }
