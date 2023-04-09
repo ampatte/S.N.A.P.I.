@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const thoughtSchema = require('./Thoughts');
+const reactionSchema = require('./Reactions');
 
 const userSchema = new Schema(
   {
@@ -16,12 +17,7 @@ const userSchema = new Schema(
         //* Must match a valid email address (look into Mongoose's matching validation)
         match:/^\S+@\S+\.\S+$/,
     },
-    thoughts: [ //   * Array of `_id` values referencing the `Thought` model
-    {
-        type: Schema.Types.ObjectId,
-        ref: 'Thoughts'
-    }
-    ],
+    reactions: [reactionSchema],
     friends: [
         {
             type: Schema.Types.ObjectId,
@@ -31,6 +27,7 @@ const userSchema = new Schema(
   },
   {
     toJSON: {
+      getters: true,
       virtuals: true,
     },
     id: false,
