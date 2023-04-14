@@ -11,7 +11,7 @@ const thoughtSchema = new Schema(
     createdAt: {
       type: Date,
       //* Set default value to the current timestamp
-      default: Date.now(),
+      default: Date.now,
       //* Use a getter method to format the timestamp on query
       get: (date) => timeSince(date),
     },
@@ -19,12 +19,6 @@ const thoughtSchema = new Schema(
       type: String,
       required: true,
     },
-    users: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Users',
-      },
-    ],
   reactions: [reactionSchema],
  }, {
     toJSON: {
