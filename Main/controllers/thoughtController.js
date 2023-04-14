@@ -20,29 +20,30 @@ const thoughtController = {
       .catch((err) => res.status(500).json(err));
   },
 
-  // Create a thought
-  createNewThought(req, res) {
-    Thoughts.create(req.body)
-      .then((thought) => {
-        Users.findOneAndUpdate(
-          { _id: req.body.userId },
-          { $addToSet: { thought: thought._id } },
-          { new: true }
-        )
-      .then((user) =>
-        !user
-          ? res.status(404).json({
-              message: 'Thought created, but found no user with that ID'
-            })
-        : res.json({thought, user, message: 'Created the thought 🎉'})
+ // Create a thought
+createNewThought(req, res) {
+  Thoughts.create(req.body)
+    .then((thought) => {
+      Users.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $addToSet: { thought: thoughtText._id } },
+        { new: true }
       )
-       .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
-    });
-  })
-  .catch((err) => res.status(500).json(err));
+        .then((user) =>
+          !user
+            ? res.status(404).json({
+                message: 'Thought created, but found no user with that ID'
+              })
+            : res.json({thought, user, message: 'Created the thought 🎉'})
+        )
+        .catch((err) => {
+          console.log(err);
+          res.status(500).json(err);
+        });
+    })
+    .catch((err) => res.status(500).json(err));
 },
+
 
   // Delete a thought
   deleteThought(req, res) {

@@ -27,13 +27,13 @@ const userController = {
  
   // Delete a User and remove all thoughts
   deleteUser(req, res) {
-    Users.findOneDelete({ _id: req.params.UserId })
+    Users.findOneAndDelete({ _id: req.params.userId })
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No such User exists' })
           : Thoughts.findOneAndUpdate(
-              { Users: req.params.UserId },
-              { $pull: { users: req.params.UserId } },
+              { Users: req.params.UuerId },
+              { $pull: { users: req.params.userId } },
               { new: true }
             )
       )
@@ -70,7 +70,7 @@ const userController = {
     console.log('You are adding a friend');
     console.log(req.body);
     Users.findOneAndUpdate(
-      { _id: req.params.UserId },
+      { _id: req.params.userId },
       { $addToSet: { friend: req.body } },
       { runValidators: true, new: true }
     )
@@ -86,7 +86,7 @@ const userController = {
   // Remove assignment from a User
   removeFriend(req, res) {
     Users.findOneAndUpdate(
-      { _id: req.params.UserId },
+      { _id: req.params.userId },
       { $pull: { friend: { friendId: req.params.friendId } } },
       { runValidators: true, new: true }
     )
