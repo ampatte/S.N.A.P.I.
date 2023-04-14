@@ -1,11 +1,5 @@
 const { Users, Thoughts } = require('../models');
 
-// Aggregate function to get the number of Users overall
-// const headCount = async () =>
-//   Users.aggregate()
-//     .count('UserCount')
-//     .then((numberOfUsers) => numberOfUsers);
-
 const userController = {
   // Get all Users
   getAllUsers(req, res) {
