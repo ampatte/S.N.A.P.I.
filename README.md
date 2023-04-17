@@ -22,7 +22,7 @@
 
   ## Usage
   This was created as a homework assignment but can be useful in the future to refer to when building other APIs.
-  ![alt text](Assets/images/2023-01-05 (2).png)
+  ![alt text](./assets/Screenshot%20(10).png)
   
   ## Contribution
   Anna Marie
