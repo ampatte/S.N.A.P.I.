@@ -4,7 +4,7 @@
 
   [Walkthrough](https://watch.screencastify.com/v/Y9HbnJ2NrcjOjzpAZ6Fz)
   
-  [Github repo](https://github.com/ampatte/TrackMyBusiness)
+  [Github repo](https://github.com/ampatte/S.N.A.P.I.)
 
   ## Description
   S.N.A.P.I is a NoSQL Social Network API
